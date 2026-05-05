@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'providers/drawing_provider.dart';
 import 'screens/drawing_screen.dart';
+import 'theme/hyperos_theme.dart';
 
 void main() {
   runApp(const DrawingApp());
@@ -18,11 +19,11 @@ class DrawingApp extends StatelessWidget {
       child: DynamicColorBuilder(
         builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
           final lightScheme = lightDynamic ?? ColorScheme.fromSeed(
-            seedColor: Colors.blue,
+            seedColor: HyperOSTheme.hyperOSBlue,
             brightness: Brightness.light,
           );
           final darkScheme = darkDynamic ?? ColorScheme.fromSeed(
-            seedColor: Colors.blue,
+            seedColor: HyperOSTheme.hyperOSBlue,
             brightness: Brightness.dark,
           );
 
@@ -30,15 +31,8 @@ class DrawingApp extends StatelessWidget {
             title: 'Bloc de Dibujo',
             debugShowCheckedModeBanner: false,
             themeMode: ThemeMode.system,
-            theme: ThemeData(
-              useMaterial3: true,
-              colorScheme: lightScheme,
-            ),
-            darkTheme: ThemeData(
-              useMaterial3: true,
-              colorScheme: darkScheme,
-              brightness: Brightness.dark,
-            ),
+            theme: HyperOSTheme.lightTheme(lightScheme),
+            darkTheme: HyperOSTheme.darkTheme(darkScheme),
             home: const DrawingScreen(),
           );
         },
