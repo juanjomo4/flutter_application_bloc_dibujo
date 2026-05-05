@@ -9,31 +9,35 @@ class BarraHerramientasDibujo extends StatelessWidget {
 
   // Lista de colores disponibles en la paleta.
   static const _colores = [
+    Colors.black,
+    Colors.grey,
     HyperOSTheme.hyperOSBlue,
     HyperOSTheme.hyperOSRed,
     HyperOSTheme.hyperOSGreen,
     HyperOSTheme.hyperOSYellow,
     HyperOSTheme.hyperOSPurple,
     HyperOSTheme.hyperOSPink,
-    Colors.black,
-    Colors.grey,
   ];
 
   @override
   Widget build(BuildContext context) {
     final proveedor = context.watch<ProveedorDibujo>();
-    final theme = Theme.of(context);
+    // final theme = Theme.of(context);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
+        color: Colors.black.withOpacity(0.28),
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(20),
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha((0.08 * 255).round()),
-            blurRadius: 12,
-            offset: const Offset(0, -2),
+            color: Colors.black.withOpacity(0.12),
+            blurRadius: 10,
+            offset: const Offset(0, -0.5),
           ),
+          
         ],
       ),
       child: Column(
@@ -44,7 +48,7 @@ class BarraHerramientasDibujo extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceContainer,
+              color: Colors.black.withOpacity(0.10),
               borderRadius: BorderRadius.circular(14),
             ),
             child: SingleChildScrollView(
@@ -52,15 +56,15 @@ class BarraHerramientasDibujo extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ..._colores.map(
-                    (color) => _PuntoColor(
+                  for (final color in _colores) ...[
+                    _PuntoColor(
                       color: color,
                       isSelected:
                           !proveedor.esBorrador && proveedor.colorSeleccionado == color,
                       onTap: () => proveedor.establecerColor(color),
                     ),
-                  ),
-                  const SizedBox(width: 4),
+                    const SizedBox(width: 3),
+                  ],
                   // Botón para activar el modo borrador.
                   _BotonBorrador(isActive: proveedor.esBorrador),
                 ],
@@ -71,7 +75,7 @@ class BarraHerramientasDibujo extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceContainer,
+              color: Colors.black.withOpacity(0.10),
               borderRadius: BorderRadius.circular(14),
             ),
             child: Row(
@@ -79,7 +83,7 @@ class BarraHerramientasDibujo extends StatelessWidget {
                 Icon(
                   Icons.brush,
                   size: 20,
-                  color: theme.colorScheme.primary,
+                  color: Colors.white,
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -89,6 +93,9 @@ class BarraHerramientasDibujo extends StatelessWidget {
                     value: proveedor.grosorTrazo,
                     onChanged: proveedor.establecerGrosor,
                     label: '${proveedor.grosorTrazo.toInt()}px',
+                    thumbColor: Colors.white,
+                    activeColor: Colors.white,
+                    inactiveColor: Colors.white.withAlpha((0.3 * 255).round()),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -99,7 +106,7 @@ class BarraHerramientasDibujo extends StatelessWidget {
                     style: GoogleFonts.inter(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
-                      color: theme.colorScheme.onSurface,
+                      color: Colors.white,
                     ),
                     textAlign: TextAlign.center,
                   ),
