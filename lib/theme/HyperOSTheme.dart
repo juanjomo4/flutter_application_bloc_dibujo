@@ -57,16 +57,16 @@ class HyperOSTheme {
       iconButtonTheme: IconButtonThemeData(
         style: IconButton.styleFrom(
           foregroundColor: colorScheme.primary,
-          highlightColor: colorScheme.primary.withOpacity(0.1),
+          highlightColor: colorScheme.primary.withAlpha((0.1 * 255).round()),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
       ),
       sliderTheme: SliderThemeData(
         activeTrackColor: colorScheme.primary,
-        inactiveTrackColor: colorScheme.primary.withOpacity(0.2),
+        inactiveTrackColor: colorScheme.primary.withAlpha((0.2 * 255).round()),
         thumbColor: colorScheme.primary,
         trackHeight: 5,
-        overlayColor: colorScheme.primary.withOpacity(0.2),
+        overlayColor: colorScheme.primary.withAlpha((0.2 * 255).round()),
       ),
       cardTheme: CardThemeData(
         color: colorScheme.surface,
@@ -114,16 +114,16 @@ class HyperOSTheme {
       iconButtonTheme: IconButtonThemeData(
         style: IconButton.styleFrom(
           foregroundColor: _adjustColorForDark(colorScheme.primary),
-          highlightColor: _adjustColorForDark(colorScheme.primary).withOpacity(0.1),
+          highlightColor: _adjustColorForDark(colorScheme.primary).withAlpha((0.1 * 255).round()),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
       ),
       sliderTheme: SliderThemeData(
         activeTrackColor: _adjustColorForDark(colorScheme.primary),
-        inactiveTrackColor: _adjustColorForDark(colorScheme.primary).withOpacity(0.2),
+        inactiveTrackColor: _adjustColorForDark(colorScheme.primary).withAlpha((0.2 * 255).round()),
         thumbColor: _adjustColorForDark(colorScheme.primary),
         trackHeight: 5,
-        overlayColor: _adjustColorForDark(colorScheme.primary).withOpacity(0.2),
+        overlayColor: _adjustColorForDark(colorScheme.primary).withAlpha((0.2 * 255).round()),
       ),
       cardTheme: CardThemeData(
         color: colorScheme.surface,
@@ -203,7 +203,7 @@ class HyperOSTheme {
       bodySmall: _buildTextStyle(
         fontSize: 12,
         fontWeight: FontWeight.w400,
-        color: textColor.withOpacity(0.7),
+        color: textColor.withAlpha((0.7 * 255).round()),
         letterSpacing: 0.4,
       ),
       labelLarge: _buildTextStyle(

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../providers/drawing_provider.dart';
-import '../theme/hyperos_theme.dart';
+import '../providers/ProveedorDibujo.dart';
+import '../theme/HyperOSTheme.dart';
 
-class DrawingToolbar extends StatelessWidget {
-  const DrawingToolbar({super.key});
+class BarraHerramientasDibujo extends StatelessWidget {
+  const BarraHerramientasDibujo({super.key});
 
-  static const _colors = [
+  // Lista de colores disponibles en la paleta.
+  static const _colores = [
     HyperOSTheme.hyperOSBlue,
     HyperOSTheme.hyperOSRed,
     HyperOSTheme.hyperOSGreen,
@@ -20,7 +21,7 @@ class DrawingToolbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<DrawingProvider>();
+    final proveedor = context.watch<ProveedorDibujo>();
     final theme = Theme.of(context);
 
     return Container(
@@ -29,7 +30,7 @@ class DrawingToolbar extends StatelessWidget {
         color: theme.colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Colors.black.withAlpha((0.08 * 255).round()),
             blurRadius: 12,
             offset: const Offset(0, -2),
           ),
@@ -39,7 +40,7 @@ class DrawingToolbar extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         spacing: 12,
         children: [
-          // Paleta de colores + borrador
+          // Caja de selección de color + botón de borrador
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             decoration: BoxDecoration(
@@ -51,21 +52,22 @@ class DrawingToolbar extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ..._colors.map(
-                    (color) => _ColorDot(
+                  ..._colores.map(
+                    (color) => _PuntoColor(
                       color: color,
                       isSelected:
-                          !provider.isEraser && provider.selectedColor == color,
-                      onTap: () => provider.setColor(color),
+                          !proveedor.esBorrador && proveedor.colorSeleccionado == color,
+                      onTap: () => proveedor.establecerColor(color),
                     ),
                   ),
                   const SizedBox(width: 4),
-                  _EraserButton(isActive: provider.isEraser),
+                  // Botón para activar el modo borrador.
+                  _BotonBorrador(isActive: proveedor.esBorrador),
                 ],
               ),
             ),
           ),
-          // Grosor del trazo
+          // Ajuste de grosor del trazo
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
@@ -84,16 +86,16 @@ class DrawingToolbar extends StatelessWidget {
                   child: Slider(
                     min: 1,
                     max: 20,
-                    value: provider.strokeWidth,
-                    onChanged: provider.setStrokeWidth,
-                    label: '${provider.strokeWidth.toInt()}px',
+                    value: proveedor.grosorTrazo,
+                    onChanged: proveedor.establecerGrosor,
+                    label: '${proveedor.grosorTrazo.toInt()}px',
                   ),
                 ),
                 const SizedBox(width: 8),
                 SizedBox(
                   width: 40,
                   child: Text(
-                    '${provider.strokeWidth.toInt()}px',
+                    '${proveedor.grosorTrazo.toInt()}px',
                     style: GoogleFonts.inter(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
@@ -111,23 +113,24 @@ class DrawingToolbar extends StatelessWidget {
   }
 }
 
-class _ColorDot extends StatefulWidget {
+class _PuntoColor extends StatefulWidget {
   final Color color;
   final bool isSelected;
   final VoidCallback onTap;
 
-  const _ColorDot({
+  const _PuntoColor({
     required this.color,
     required this.isSelected,
     required this.onTap,
   });
 
   @override
-  State<_ColorDot> createState() => _ColorDotState();
+  State<_PuntoColor> createState() => _PuntoColorState();
 }
 
-class _ColorDotState extends State<_ColorDot>
+class _PuntoColorState extends State<_PuntoColor>
     with SingleTickerProviderStateMixin {
+  // Controlador de animación para el efecto de selección.
   late AnimationController _controller;
 
   @override
@@ -140,7 +143,7 @@ class _ColorDotState extends State<_ColorDot>
   }
 
   @override
-  void didUpdateWidget(_ColorDot oldWidget) {
+  void didUpdateWidget(_PuntoColor oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.isSelected && !oldWidget.isSelected) {
       _controller.forward();
@@ -158,6 +161,7 @@ class _ColorDotState extends State<_ColorDot>
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      // Selecciona el color al tocar el punto de color.
       onTap: widget.onTap,
       child: ScaleTransition(
         scale: Tween<double>(begin: 1, end: 1.15).animate(_controller),
@@ -171,14 +175,14 @@ class _ColorDotState extends State<_ColorDot>
             shape: BoxShape.circle,
             border: Border.all(
               color: widget.isSelected
-                  ? Colors.white.withOpacity(0.8)
+                  ? Colors.white.withAlpha((0.8 * 255).round())
                   : Colors.transparent,
               width: widget.isSelected ? 2 : 0,
             ),
             boxShadow: widget.isSelected
                 ? [
                     BoxShadow(
-                      color: widget.color.withOpacity(0.4),
+                      color: widget.color.withAlpha((0.4 * 255).round()),
                       blurRadius: 12,
                       spreadRadius: 2,
                     ),
@@ -191,16 +195,16 @@ class _ColorDotState extends State<_ColorDot>
   }
 }
 
-class _EraserButton extends StatefulWidget {
+class _BotonBorrador extends StatefulWidget {
   final bool isActive;
 
-  const _EraserButton({required this.isActive});
+  const _BotonBorrador({required this.isActive});
 
   @override
-  State<_EraserButton> createState() => _EraserButtonState();
+  State<_BotonBorrador> createState() => _BotonBorradorState();
 }
 
-class _EraserButtonState extends State<_EraserButton>
+class _BotonBorradorState extends State<_BotonBorrador>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
@@ -214,7 +218,7 @@ class _EraserButtonState extends State<_EraserButton>
   }
 
   @override
-  void didUpdateWidget(_EraserButton oldWidget) {
+  void didUpdateWidget(_BotonBorrador oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.isActive && !oldWidget.isActive) {
       _controller.forward();
@@ -234,7 +238,7 @@ class _EraserButtonState extends State<_EraserButton>
     final theme = Theme.of(context);
 
     return GestureDetector(
-      onTap: () => context.read<DrawingProvider>().toggleEraser(),
+      onTap: () => context.read<ProveedorDibujo>().alternarBorrador(),
       child: ScaleTransition(
         scale: Tween<double>(begin: 1, end: 1.15).animate(_controller),
         child: AnimatedContainer(
@@ -250,7 +254,7 @@ class _EraserButtonState extends State<_EraserButton>
             boxShadow: widget.isActive
                 ? [
                     BoxShadow(
-                      color: theme.colorScheme.primary.withOpacity(0.3),
+                      color: theme.colorScheme.primary.withAlpha((0.3 * 255).round()),
                       blurRadius: 12,
                       spreadRadius: 2,
                     ),

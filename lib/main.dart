@@ -1,28 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:dynamic_color/dynamic_color.dart';
-import 'providers/drawing_provider.dart';
-import 'screens/drawing_screen.dart';
-import 'theme/hyperos_theme.dart';
+import 'providers/ProveedorDibujo.dart';
+import 'screens/PantallaDibujo.dart';
+import 'theme/HyperOSTheme.dart';
 
 void main() {
-  runApp(const DrawingApp());
+  // Punto de entrada de la aplicación Flutter.
+  // Ejecuta el widget raíz con el proveedor de estado.
+  runApp(const AplicacionDibujo());
 }
 
-class DrawingApp extends StatelessWidget {
-  const DrawingApp({super.key});
+class AplicacionDibujo extends StatelessWidget {
+  const AplicacionDibujo({super.key});
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => DrawingProvider(),
+      // Proveedor de estado global para el dibujo.
+      create: (_) => ProveedorDibujo(),
       child: DynamicColorBuilder(
-        builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
-          final lightScheme = lightDynamic ?? ColorScheme.fromSeed(
+        builder: (ColorScheme? esquemaClaro, ColorScheme? esquemaOscuro) {
+          final esquemaClaroReal = esquemaClaro ?? ColorScheme.fromSeed(
             seedColor: HyperOSTheme.hyperOSBlue,
             brightness: Brightness.light,
           );
-          final darkScheme = darkDynamic ?? ColorScheme.fromSeed(
+          final esquemaOscuroReal = esquemaOscuro ?? ColorScheme.fromSeed(
             seedColor: HyperOSTheme.hyperOSBlue,
             brightness: Brightness.dark,
           );
@@ -30,10 +33,11 @@ class DrawingApp extends StatelessWidget {
           return MaterialApp(
             title: 'Bloc de Dibujo',
             debugShowCheckedModeBanner: false,
+            // Usa el tema claro u oscuro según la configuración del sistema.
             themeMode: ThemeMode.system,
-            theme: HyperOSTheme.lightTheme(lightScheme),
-            darkTheme: HyperOSTheme.darkTheme(darkScheme),
-            home: const DrawingScreen(),
+            theme: HyperOSTheme.lightTheme(esquemaClaroReal),
+            darkTheme: HyperOSTheme.darkTheme(esquemaOscuroReal),
+            home: const PantallaDibujo(),
           );
         },
       ),
